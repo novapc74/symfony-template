@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Trait;
+namespace App\Entity\Feature;
 
 use App\Entity\Media;
 use TypeError;

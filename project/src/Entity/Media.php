@@ -32,6 +32,18 @@ class Media
     #[ORM\Column(nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
 
+    private const AVAILABLE_EXTENSIONS = ['image/jpg', 'image/jpeg', 'image/png', 'video/mp4', 'application/pdf'];
+    private const FILTERABLE_EXTENSIONS = ['image/jpg', 'image/jpeg', 'image/png'];
+    public static function getAvailableExtensions(): array
+    {
+        return self::AVAILABLE_EXTENSIONS;
+    }
+
+    public static function getFilterableExtensions(): array
+    {
+        return self::FILTERABLE_EXTENSIONS;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
