@@ -17,8 +17,8 @@ trait HasMediaTrait
 		if (!method_exists($this, $fieldGetterMethod) || !method_exists($this, $fieldSetterMethod)) {
 			throw new TypeError('У объекта не объявлены методы для заявленного свойства');
 		}
-		$oldMediaFile = $this->$fieldGetterMethod()?->getUploadedFile();
-		if ($oldMediaFile !== $fieldMedia?->getUploadedFile()) {
+		$oldMediaFile = $this->$fieldGetterMethod()?->getImageFile();
+		if ($oldMediaFile !== $fieldMedia?->getImageFile()) {
 			$newMedia = clone $fieldMedia;
 			$this->$fieldSetterMethod($newMedia);
 		}
