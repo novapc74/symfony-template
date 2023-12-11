@@ -29,6 +29,20 @@ services:
             $mailSender: '%app.mail_sender%'
             $mailRecipients: '%app.mail_recipients%'
 
+    App\EventListener\ImageCacheWarmer:
+        tags:
+            - { name: 'doctrine.orm.entity_listener', event: 'preUpdate', entity: 'App\Entity\Media' }
+            - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Entity\Media' }
+
+    App\EventListener\GalleryImageCleaner:
+        tags:
+            - { name: 'doctrine.orm.entity_listener', event: 'preRemove', entity: 'App\Entity\Gallery' }
+
+    App\EventListener\PageBlockImageCleaner:
+        tags:
+            - { name: 'doctrine.orm.entity_listener', event: 'preRemove', entity: 'App\Entity\PageBlock' }
+            - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Entity\PageBlock' }
+
 knp_paginator:
     page_range: 5                       # number of links shown in the pagination menu (e.g: you have 10 pages, a page_range of 3, on the 5th page you'll see links to page 4, 5, 6)
     default_options:

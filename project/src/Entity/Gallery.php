@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use App\Entity\Feature\HasMediaInterface;
-use App\Entity\Feature\HasMediaTrait;
-use App\Repository\GalleryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\GalleryRepository;
+use App\Entity\Feature\HasMediaTrait;
+use App\Entity\Feature\HasMediaInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: GalleryRepository::class)]
@@ -23,6 +23,9 @@ class Gallery implements HasMediaInterface
 
     #[ORM\Column(nullable: true)]
     private ?int $sort = 0;
+
+    #[ORM\ManyToOne(targetEntity: PageBlock::class, cascade: ['persist'], inversedBy: 'gallery')]
+    private ?PageBlock $pageBlock = null;
 
     public function getId(): ?int
     {
@@ -71,6 +74,18 @@ class Gallery implements HasMediaInterface
     public function setNewImage(?Media $image): self
     {
         $this->uploadNewMedia($image, 'image');
+
+        return $this;
+    }
+
+    public function getPageBlock(): ?PageBlock
+    {
+        return $this->pageBlock;
+    }
+
+    public function setPageBlock(?PageBlock $pageBlock): static
+    {
+        $this->pageBlock = $pageBlock;
 
         return $this;
     }

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Entity\Trait;
+namespace App\Entity\Feature;
 
 use App\Entity\Media;
 use App\Enum\MediaCache;
 
 trait CacheMediaPathTrait
 {
-    public function getMediaCachePath(?Media $media, ?string $filter = 'middle_banner'): ?string
+    public function getMediaCachePath(?Media $media, ?string $filter = 'medium'): ?string
     {
         if (null === $media) {
             return null;

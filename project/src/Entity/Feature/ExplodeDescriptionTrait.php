@@ -7,13 +7,13 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\HasLifecycleCallbacks]
 trait ExplodeDescriptionTrait
 {
-    private int $fullDescriptionIndex = 1;
     private int $shortDescriptionIndex = 0;
+    private int $fullDescriptionIndex = 1;
     private ?string $shortDescription = null;
     private ?string $fullDescription = null;
     private string $delimiterDescription = '<-#%#->';
 
-    public function getShortDescription(): string
+    public function getShortDescription(): ?string
     {
         return $this->explodeDescription($this->shortDescriptionIndex);
     }
@@ -25,7 +25,7 @@ trait ExplodeDescriptionTrait
         return $this;
     }
 
-    public function getFullDescription(): string
+    public function getFullDescription(): ?string
     {
         return $this->explodeDescription($this->fullDescriptionIndex);
     }
@@ -37,9 +37,11 @@ trait ExplodeDescriptionTrait
         return $this;
     }
 
-    private function explodeDescription(int $type): string
+    private function explodeDescription(int $type): ?string
     {
-        return explode($this->delimiterDescription, $this->getDescription())[$type];
+        $description = explode($this->delimiterDescription, $this->getDescription());
+
+        return count($description) > 1 ? $description[$type] : null;
     }
 
     private function resolveDescription(): void
