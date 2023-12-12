@@ -29,16 +29,17 @@ services:
             $mailSender: '%app.mail_sender%'
             $mailRecipients: '%app.mail_recipients%'
 
-    App\EventListener\ImageCacheWarmer:
+    App\EventListener\ImageCacheCleaner:
         tags:
+            - { name: 'doctrine.orm.entity_listener', event: 'postPersist', entity: 'App\Entity\Media' }
             - { name: 'doctrine.orm.entity_listener', event: 'preUpdate', entity: 'App\Entity\Media' }
             - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Entity\Media' }
 
-    App\EventListener\GalleryImageCleaner:
+    App\EventListener\GalleryImageCacheCleaner:
         tags:
             - { name: 'doctrine.orm.entity_listener', event: 'preRemove', entity: 'App\Entity\Gallery' }
 
-    App\EventListener\PageBlockImageCleaner:
+    App\EventListener\PageBlockImageCacheCleaner:
         tags:
             - { name: 'doctrine.orm.entity_listener', event: 'preRemove', entity: 'App\Entity\PageBlock' }
             - { name: 'doctrine.orm.entity_listener', event: 'postUpdate', entity: 'App\Entity\PageBlock' }

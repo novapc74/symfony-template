@@ -4,12 +4,14 @@ namespace App\EventListener;
 
 use App\Entity\Gallery;
 use App\Entity\PageBlock;
+use App\Enum\MediaCache;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use App\EventListener\Features\RemoveMediaTrait;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use App\EventListener\Features\SetForeignKeyCheckAsNullTrait;
+use Liip\ImagineBundle\Message\WarmupCache;
 
-class PageBlockImageCleaner
+class PageBlockImageCacheCleaner
 {
     use RemoveMediaTrait, SetForeignKeyCheckAsNullTrait;
 
@@ -21,8 +23,9 @@ class PageBlockImageCleaner
         $pageBlockChanges = $unitOfWork->getEntityChangeSet($pageBlock);
 
         if (array_key_exists('image', $pageBlockChanges) && $oldMedia = $pageBlockChanges['image'][0]) {
-            $this->removeImageCache($oldMedia->getImageName());
             $this->removeMedia($oldMedia);
+
+            $this->messageBus->dispatch(new WarmupCache(MediaCache::UploadMediaFolder->value . $pageBlock->getImage()->getImageName()));
         }
     }
 
@@ -31,15 +34,11 @@ class PageBlockImageCleaner
         $this->setForeignKeyChecksAsNull($args);
 
         if ($image = $pageBlock->getImage()) {
-            $this->removeImageCache($image->getImageName());
             $this->removeMedia($image);
         }
 
-        $pageBlock->getGallery()->map(function (Gallery $gallery) {
-            $image = $gallery->getImage();
-
-            $this->removeImageCache($image->getImageName());
-            $this->removeMedia($image);
-        });
+        $pageBlock
+            ->getGallery()
+            ->map(fn(Gallery $gallery) => $this->removeMedia($gallery->getImage()));
     }
 }

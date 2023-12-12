@@ -7,11 +7,14 @@ use App\Enum\MediaCache;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+use Symfony\Component\Messenger\MessageBusInterface;
+
 
 trait RemoveMediaTrait
 {
     public function __construct(private readonly EntityManagerInterface $entityManager,
-                                private readonly CacheManager           $imagineCacheManager)
+                                private readonly CacheManager           $imagineCacheManager,
+                                private readonly MessageBusInterface    $messageBus)
     {
     }
 
@@ -27,12 +30,13 @@ trait RemoveMediaTrait
 
     private function removeMedia(?Media $media): void
     {
+        $this->removeMediaCache($media->getImageName());
         $this->entityManager->remove($media);
     }
 
-    private function removeImageCache(string $imageName): void
+    private function removeMediaCache(string $mediaCacheName): void
     {
-        $imagePath = MediaCache::UploadMediaFolder->value . $imageName;
+        $imagePath = MediaCache::UploadMediaFolder->value . $mediaCacheName;
 
         $this->imagineCacheManager->remove($imagePath);
         $this->imagineCacheManager->remove("$imagePath.webp");

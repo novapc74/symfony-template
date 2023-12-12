@@ -7,7 +7,7 @@ use Doctrine\ORM\Event\PreRemoveEventArgs;
 use App\EventListener\Features\RemoveMediaTrait;
 use App\EventListener\Features\SetForeignKeyCheckAsNullTrait;
 
-class GalleryImageCleaner
+class GalleryImageCacheCleaner
 {
     use RemoveMediaTrait, SetForeignKeyCheckAsNullTrait;
 
@@ -16,7 +16,6 @@ class GalleryImageCleaner
         $this->setForeignKeyChecksAsNull($args);
 
         if ($image = $gallery->getImage()) {
-            $this->removeImageCache($image->getImageName());
             $this->removeMedia($image);
         }
     }

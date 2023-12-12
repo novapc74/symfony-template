@@ -4,9 +4,16 @@
     {% set gallery = entity.instance.gallery %}
 {% endif %}
 
-{% for item in gallery %}
-    {% if item.image is not null %}
-        <img src="{{ vich_uploader_asset(item.image, 'imageFile') | imagine_filter_cache('admin_thumbnail') }}"
-             alt="{{ item.image.mimeType }}">
-    {% endif %}
-{% endfor %}
+{% if gallery is not iterable %}
+    <img src="{{ vich_uploader_asset(gallery, 'imageFile') | imagine_filter_cache('thumbnail') }}"
+         alt="{{ gallery.mimeType }}">
+{% else %}
+    {% for item in gallery %}
+        {% if item.image is not null %}
+            <img src="{{ vich_uploader_asset(item.image, 'imageFile') | imagine_filter_cache('thumbnail') }}"
+                 alt="{{ item.image.mimeType }}">
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+

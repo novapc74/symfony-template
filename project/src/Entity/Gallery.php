@@ -34,7 +34,7 @@ class Gallery implements HasMediaInterface
 
     public function __toString(): string
     {
-        return $this->type ?? $this->id;
+        return $this->type ?? 'новый';
     }
 
     public function getImage(): ?Media
