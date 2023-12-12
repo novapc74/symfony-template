@@ -4,9 +4,9 @@ namespace App\EventListener;
 
 use App\Entity\Media;
 use App\Enum\MediaCache;
+use Liip\ImagineBundle\Message\WarmupCache;
 use App\EventListener\Features\RemoveMediaTrait;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Liip\ImagineBundle\Message\WarmupCache;
 
 class ImageCacheCleaner
 {
@@ -17,7 +17,7 @@ class ImageCacheCleaner
 
     public function postPersist(Media $media): void
     {
-        $this->messageBus->dispatch(new WarmupCache(MediaCache::UploadMediaFolder->value . $media->getImageName()));
+        $this->messageBus->dispatch(new WarmupCache(MediaCache::UploadMediaFolder->value . $media->getImageName()), ['medium']);
     }
 
     public function preUpdate(Media $media): void
@@ -36,6 +36,6 @@ class ImageCacheCleaner
             $this->removeMediaCache($this->oldImageCacheName);
         }
 
-        $this->messageBus->dispatch(new WarmupCache(MediaCache::UploadMediaFolder->value . $media->getImageName()));
+        $this->messageBus->dispatch(new WarmupCache(MediaCache::UploadMediaFolder->value . $media->getImageName()), ['medium']);
     }
 }

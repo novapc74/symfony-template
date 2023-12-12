@@ -6,10 +6,10 @@ use App\Entity\Gallery;
 use App\Entity\PageBlock;
 use App\Enum\MediaCache;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
+use Liip\ImagineBundle\Message\WarmupCache;
 use App\EventListener\Features\RemoveMediaTrait;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use App\EventListener\Features\SetForeignKeyCheckAsNullTrait;
-use Liip\ImagineBundle\Message\WarmupCache;
 
 class PageBlockImageCacheCleaner
 {
@@ -25,7 +25,7 @@ class PageBlockImageCacheCleaner
         if (array_key_exists('image', $pageBlockChanges) && $oldMedia = $pageBlockChanges['image'][0]) {
             $this->removeMedia($oldMedia);
 
-            $this->messageBus->dispatch(new WarmupCache(MediaCache::UploadMediaFolder->value . $pageBlock->getImage()->getImageName()));
+            $this->messageBus->dispatch(new WarmupCache(MediaCache::UploadMediaFolder->value . $pageBlock->getImage()->getImageName(), ['medium']));
         }
     }
 
